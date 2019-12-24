@@ -1,0 +1,23 @@
+dist: trusty
+language: node_js
+node_js:
+  - "8"
+cache:
+  directories:
+    - node_modules
+before_install:
+  - npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
+script:
+  - npm run check
+  - npm run coverage:ci
+  - |
+    echo TRAVIS_BRANCH=$TRAVIS_BRANCH - TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST - TRAVIS_TAG=$TRAVIS_TAG
+    if [[ $TRAVIS_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+      echo DEPLOY TO NPM: $TRAVIS_TAG
+      npm publish
+    elif [[ $TRAVIS_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+$ ]]; then
+      echo DEPLOY BETA VERSION
+      npm publish --tag beta
+    fi
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

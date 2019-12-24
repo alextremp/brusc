@@ -1,0 +1,54 @@
+{
+  "name": "brusc",
+  "version": "0.0.1",
+  "description": "IOC Container for Effective JS development",
+  "main": "dist",
+  "keywords": [
+    "ioc",
+    "container",
+    "dependency injection",
+    "inversion of control",
+    "solid"
+  ],
+  "author": "Alex Castells",
+  "license": "MIT",
+  "repository": "github:alextremp/brusc",
+  "scripts": {
+    "clean": "rm -Rf dist",
+    "phoenix": "rm -Rf node_modules && rm -Rf package-lock.json && npm i",
+    "prepack": "npm run clean && npm run build",
+    "test": "mocha --recursive --require @babel/register \"src/test/**/*Test.js\"",
+    "coverage": "istanbul cover --report html _mocha -- ./src/test* --recursive --require @babel/register",
+    "coverage:ci": "istanbul cover _mocha -- ./src/test* --recursive --require @babel/register && codecov",
+    "lint": "sui-lint js",
+    "check": "npm run lint && npm run test",
+    "build": "npm run clean && babel src/main --out-dir dist"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.7.5",
+    "@babel/core": "^7.7.5",
+    "@babel/plugin-transform-modules-commonjs": "^7.7.5",
+    "@babel/register": "^7.7.4",
+    "@babel/runtime": "^7.7.6",
+    "@s-ui/lint": "^3.14.0",
+    "babel-loader": "^8.0.6",
+    "chai": "^4.2.0",
+    "codecov": "^3.6.1",
+    "istanbul": "1.1.0-alpha.1",
+    "mocha": "5.2.0"
+  },
+  "babel": {
+    "plugins": [
+      "@babel/plugin-transform-modules-commonjs"
+    ]
+  },
+  "eslintConfig": {
+    "extends": [
+      "./node_modules/@s-ui/lint/eslintrc.js"
+    ]
+  },
+  "prettier": "./node_modules/@s-ui/lint/.prettierrc.js",
+  "stylelint": {
+    "extends": "./node_modules/@s-ui/lint/stylelint.config.js"
+  }
+}

@@ -1,0 +1,9 @@
+.private
+coverage
+node_modules
+src
+.gitignore
+.idea
+.travis.yml
+.github
+*.md
