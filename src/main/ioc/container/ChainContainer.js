@@ -7,6 +7,12 @@ class ChainContainer extends DefaultContainer {
     this._chained = chained
   }
 
+  static create({module, adapter, chained}) {
+    const reAdapter = (instance, key, module) =>
+      adapter(chained.adapter(instance, key, module), key, module)
+    return new ChainContainer({module, adapter: reAdapter, chained})
+  }
+
   provide(key) {
     try {
       return this._chained.has(key)

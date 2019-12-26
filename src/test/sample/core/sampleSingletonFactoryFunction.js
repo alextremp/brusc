@@ -1,6 +1,6 @@
 import {inject} from './context/ioc'
 
-export const sampleSingletonFactory = ({
-  open = inject('samplePrototypeFactory'),
-  close = inject('samplePrototypeFactory')
+export const sampleSingletonFactoryFunction = ({
+  open = inject('samplePrototypeFunction'),
+  close = inject('samplePrototypeFunction')
 } = {}) => text => `${open(text)}${text}${close(text)}`

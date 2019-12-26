@@ -8,7 +8,7 @@ class Sample {
     singletonB = inject(SampleSingletonClass),
     prototypeA = inject(SamplePrototypeClass),
     prototypeB = inject(SamplePrototypeClass),
-    textFunction = inject('sampleSingletonFactory')
+    textFunction = inject('sampleSingletonFunction')
   } = {}) {
     this._singletonA = singletonA
     this._singletonB = singletonB

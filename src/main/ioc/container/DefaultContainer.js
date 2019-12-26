@@ -7,7 +7,7 @@ import {InstantiationError} from '../error/InstantiationError'
 import {InvalidAdapterError} from '../error/InvalidAdapterError'
 
 class DefaultContainer extends Container {
-  constructor({module, adapter = instance => instance}) {
+  constructor({module, adapter}) {
     super()
     this._guardAdapterIsAFunction(adapter)
     this._module = module
@@ -18,6 +18,10 @@ class DefaultContainer extends Container {
     this._eagers = new Set()
     this._singletonProvider = () => key => this._provideSingleton(key)
     this._prototypeProvider = () => key => this._providePrototype(key)
+  }
+
+  get adapter() {
+    return this._adapter
   }
 
   singleton(key, builder, lazy = true) {

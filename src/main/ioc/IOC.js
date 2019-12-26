@@ -24,6 +24,10 @@ class IOC {
     }
   }
 
+  clear(module) {
+    this._modules.delete(module)
+  }
+
   injector(module) {
     this._guardModuleExists(module)
     return key => this._modules.get(module).container.provide(key)
@@ -36,7 +40,7 @@ class IOC {
       container = new DefaultContainer({module, adapter})
     } else {
       if (old.chain) {
-        container = new ChainContainer({
+        container = ChainContainer.create({
           module,
           adapter,
           chained: old.container
