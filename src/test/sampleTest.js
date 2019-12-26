@@ -1,13 +1,14 @@
 import {expect} from 'chai'
-import {iocModule} from '../main/index'
+import {iocModule, iocReset} from '../main/index'
 import {inject, IOC_CONTEXT} from './sample/core/context/ioc'
 import {Sample} from './sample/core/Sample'
 import {SampleInterface} from './sample/core/SampleInterface'
 import {SampleInterfaceImpl} from './sample/core/SampleInterfaceImpl'
 import {SampleSingletonClass} from './sample/core/SampleSingletonClass'
-import {sampleSingletonFactory} from './sample/core/sampleSingletonFactoryFunction'
+import {sampleSingletonFactoryFunction} from './sample/core/sampleSingletonFactoryFunction'
 import {SamplePrototypeClass} from './sample/core/SamplePrototypeClass'
-import {samplePrototypeFactory} from './sample/core/samplePrototypeFactoryFunction'
+import {samplePrototypeFactoryFunction} from './sample/core/samplePrototypeFactoryFunction'
+import {ModuleDoesNotExistError} from '../main/ioc/error/ModuleDoesNotExistError'
 
 describe('features test', () => {
   describe('given a simple container initialization', () => {
@@ -18,9 +19,13 @@ describe('features test', () => {
         initializer: ({singleton, prototype}) => {
           singleton(SampleInterface, () => new SampleInterfaceImpl())
           singleton(SampleSingletonClass, () => new SampleSingletonClass())
-          singleton('sampleSingletonFactory', () => sampleSingletonFactory())
+          singleton('sampleSingletonFunction', () =>
+            sampleSingletonFactoryFunction()
+          )
           prototype(SamplePrototypeClass, () => new SamplePrototypeClass())
-          prototype('samplePrototypeFactory', () => samplePrototypeFactory())
+          prototype('samplePrototypeFunction', () =>
+            samplePrototypeFactoryFunction()
+          )
         }
       })
       sample = new Sample()
@@ -120,12 +125,19 @@ describe('features test', () => {
       expect(sample.textFunction).to.not.undefined
     })
 
+    it('should be resetable', () => {
+      require('./sample').default.init()
+      expect(() => inject(SampleInterface)).to.not.throw()
+      iocReset(IOC_CONTEXT)
+      expect(() => inject(SampleInterface)).to.throw(ModuleDoesNotExistError)
+    })
+
     it('should be able to mock any dependency', () => {
       const sampleSingletonFactoryMock = () => text => text + ' is mocked!'
       iocModule({
         module: IOC_CONTEXT,
         initializer: ({singleton}) => {
-          singleton('sampleSingletonFactory', () =>
+          singleton('sampleSingletonFunction', () =>
             sampleSingletonFactoryMock()
           )
         },
@@ -134,6 +146,25 @@ describe('features test', () => {
       const SampleInitializer = require('./sample').default
       const sample = SampleInitializer.init()
       expect(sample.textFunction('123')).to.equal('123 is mocked!')
+    })
+
+    it('should be able to externally adapt any dependency', () => {
+      const sampleSingletonFunctionAdapter = (instance, key) => {
+        switch (key) {
+          case 'sampleSingletonFunction':
+            return text => `adapted:${instance(text)}`
+          default:
+            return instance
+        }
+      }
+      iocModule({
+        module: IOC_CONTEXT,
+        adapter: sampleSingletonFunctionAdapter,
+        chain: true
+      })
+      const SampleInitializer = require('./sample').default
+      const sample = SampleInitializer.init()
+      expect(sample.textFunction('123')).to.equal('adapted:[*23]123[*3]')
     })
   })
 })

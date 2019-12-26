@@ -18,8 +18,8 @@
     "phoenix": "rm -Rf node_modules && rm -Rf package-lock.json && npm i",
     "prepack": "npm run clean && npm run build",
     "test": "mocha --recursive --require @babel/register \"src/test/**/*Test.js\"",
-    "coverage": "istanbul cover --report html _mocha -- ./src/test* --recursive --require @babel/register",
-    "coverage:ci": "istanbul cover _mocha -- ./src/test* --recursive --require @babel/register && codecov",
+    "coverage": "nyc --reporter=html --exclude=\"src/test\" npm run test",
+    "coverage:ci": "nyc --reporter=cobertura --exclude=\"src/test\" npm run test && codecov",
     "lint": "sui-lint js",
     "check": "npm run lint && npm run test",
     "build": "npm run clean && babel src/main --out-dir dist"
@@ -34,8 +34,8 @@
     "babel-loader": "^8.0.6",
     "chai": "^4.2.0",
     "codecov": "^3.6.1",
-    "istanbul": "1.1.0-alpha.1",
-    "mocha": "5.2.0"
+    "mocha": "5.2.0",
+    "nyc": "^15.0.0"
   },
   "babel": {
     "plugins": [
@@ -50,5 +50,6 @@
   "prettier": "./node_modules/@s-ui/lint/.prettierrc.js",
   "stylelint": {
     "extends": "./node_modules/@s-ui/lint/stylelint.config.js"
-  }
+  },
+  "dependencies": {}
 }
