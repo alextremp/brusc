@@ -13,6 +13,7 @@
   "author": "Alex Castells",
   "license": "MIT",
   "repository": "github:alextremp/brusc",
+  "bugs": "https://github.com/alextremp/brusc/issues",
   "scripts": {
     "clean": "rm -Rf dist",
     "phoenix": "rm -Rf node_modules && rm -Rf package-lock.json && npm i",
