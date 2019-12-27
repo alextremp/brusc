@@ -24,7 +24,7 @@
     "lint": "sui-lint js",
     "check": "npm run lint && npm run test",
     "build": "npm run clean && babel src/main --out-dir dist",
-    "version": "node version.js"
+    "version": "node autoversion/version.js"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.5",
