@@ -4,13 +4,10 @@ const shell = require('shelljs')
 const GIT_ORIGIN = `https://alextremp:${process.env.GH_TOKEN}@github.com/alextremp/brusc.git`
 
 const runCommand = function(command) {
-  console.log('>' + command)
   shell.exec(command, function(code, stdout, stderr) {
+    console.log('>' + command)
     console.log('Exit code:', code)
     console.log('Output:', stdout, stderr)
-    if (code !== 0) {
-      shell.exit(1)
-    }
   })
 }
 
