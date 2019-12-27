@@ -32,7 +32,7 @@ commands.push(`git push --set-upstream origin ${branch}`)
 commands.push(`git remote rm origin`)
 commands.push(`git remote add origin ${GIT_ORIGIN} > /dev/null 2>&1`)
 commands.push('git add package.json')
-commands.push(`git commit -m "${COMMIT_MESSAGE}" --author=${COMMIT_AUTHOR}`)
+commands.push(`git commit -m "${COMMIT_MESSAGE}" --author="${COMMIT_AUTHOR}"`)
 commands.push(`git push origin ${branch} --quiet`)
 commands.push(`npm publish${isBeta ? ' --tag beta' : ''}`)
 
