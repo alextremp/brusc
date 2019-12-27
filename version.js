@@ -9,8 +9,15 @@ const COMMIT_AUTHOR = 'Travis CI <travis@travis-ci.org>'
 const COMMIT_MESSAGE = `Update version to: ${releaseVersion}`
 
 const runCommand = function(command) {
-  console.log('>' + command)
-  shell.exec(command)
+  shell.exec(command, function(code, stdout, stderr) {
+    console.log('>' + command)
+    console.log('> exit code', code)
+    console.log('> ', stdout)
+    if (code !== 0) {
+      console.log('> ', stderr)
+      shell.exit(code)
+    }
+  })
 }
 
 const isBeta = releaseVersion.indexOf('-beta.') > -1
@@ -23,12 +30,11 @@ const branch = isBeta ? `beta/${releaseVersion}` : 'master'
 commands.push('git config --global user.email "alextremp@hotmail.com"')
 commands.push('git config --global user.name "Alex Castells"')
 commands.push(`git checkout -b ${branch}`)
-commands.push(`git push --set-upstream origin ${branch}`)
 commands.push(`git remote rm origin`)
 commands.push(`git remote add origin ${GIT_ORIGIN} > /dev/null 2>&1`)
 commands.push('git add package.json')
 commands.push(`git commit -m "${COMMIT_MESSAGE}" --author="${COMMIT_AUTHOR}"`)
-commands.push(`git push origin ${branch} --quiet`)
+commands.push(`git push --repo=${GIT_ORIGIN} origin ${branch} --quiet`)
 commands.push(`npm publish${isBeta ? ' --tag beta' : ''}`)
 
 commands.forEach(command => {
