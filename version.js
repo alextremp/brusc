@@ -22,5 +22,11 @@ commands.push(`npm publish${isBeta ? ' --tag beta' : ''}`)
 
 commands.forEach(command => {
   console.log('>' + command)
-  shell.exec(command, {fatal: true})
+  shell.exec(command, function(code, stdout, stderr) {
+    console.log('Exit code:', code)
+    console.log('Output:', stdout, stderr)
+    if (code !== 0) {
+      shell.exit(1)
+    }
+  })
 })
