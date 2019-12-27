@@ -13,6 +13,7 @@
   "author": "Alex Castells",
   "license": "MIT",
   "repository": "github:alextremp/brusc",
+  "bugs": "https://github.com/alextremp/brusc/issues",
   "scripts": {
     "clean": "rm -Rf dist",
     "phoenix": "rm -Rf node_modules && rm -Rf package-lock.json && npm i",
@@ -22,7 +23,8 @@
     "coverage:ci": "nyc --reporter=cobertura --exclude=\"src/test\" npm run test && codecov",
     "lint": "sui-lint js",
     "check": "npm run lint && npm run test",
-    "build": "npm run clean && babel src/main --out-dir dist"
+    "build": "npm run clean && babel src/main --out-dir dist",
+    "version": "node version.js"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.5",
@@ -35,7 +37,8 @@
     "chai": "^4.2.0",
     "codecov": "^3.6.1",
     "mocha": "5.2.0",
-    "nyc": "^15.0.0"
+    "nyc": "^15.0.0",
+    "shelljs": "^0.8.3"
   },
   "babel": {
     "plugins": [
