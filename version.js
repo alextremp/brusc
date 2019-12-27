@@ -8,12 +8,12 @@ const GIT_ORIGIN = `https://alextremp:${process.env.GH_TOKEN}@github.com/alextre
 const COMMIT_AUTHOR = 'Travis CI <travis@travis-ci.org>'
 const COMMIT_MESSAGE = `Update version to: ${releaseVersion}`
 
-const runCommand = function(command) {
+const runCommand = function(command, validate = false) {
   shell.exec(command, function(code, stdout, stderr) {
     console.log('>' + command)
     console.log('> exit code', code)
     console.log('> ', stdout)
-    if (code !== 0) {
+    if (validate && code !== 0) {
       console.log('> ', stderr)
       shell.exit(code)
     }
