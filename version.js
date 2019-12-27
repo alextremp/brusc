@@ -27,6 +27,8 @@ fs.writeFileSync('package.json', JSON.stringify(config, null, 2))
 
 const commands = []
 const branch = isBeta ? `beta/${releaseVersion}` : 'master'
+commands.push('git config --global user.email "alextremp@hotmail.com"')
+commands.push('git config --global user.name "Alex Castells"')
 commands.push(`git checkout -b ${branch}`)
 commands.push(`git push --set-upstream origin ${branch}`)
 commands.push(`git remote rm origin`)
