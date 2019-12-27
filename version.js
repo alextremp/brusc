@@ -4,7 +4,7 @@ const shell = require('shelljs')
 const config = require('./package')
 const releaseVersion = process.env.TRAVIS_TAG.replace('v', '')
 
-const GIT_ORIGIN = `https://alextremp:${process.env.GH_TOKEN}@github.com/alextremp/brusc.git`
+const GIT_ORIGIN = `https://${process.env.GH_TOKEN}@github.com/alextremp/brusc.git`
 const COMMIT_AUTHOR = 'Travis CI <travis@travis-ci.org>'
 const COMMIT_MESSAGE = `Update version to: ${releaseVersion}`
 
