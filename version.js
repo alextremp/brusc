@@ -18,6 +18,7 @@ const runCommand = function(command) {
 }
 
 const getBranch = function() {
+  runCommand('git status')
   runCommand(BRANCH_COMMAND)
   const content = fs.readFileSync(tempBranchFile, 'utf8')
   if (content) {
@@ -44,7 +45,6 @@ config.version = releaseVersion
 fs.writeFileSync('package.json', JSON.stringify(config, null, 2))
 
 const commands = []
-commands.push('git status')
 commands.push('git config --global user.email "travis@travis-ci.org"')
 commands.push('git config --global user.name "Travis CI"')
 commands.push('git remote rm origin')
