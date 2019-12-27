@@ -11,6 +11,7 @@ config.version = releaseVersion
 fs.writeFileSync('package.json', JSON.stringify(config, null, 2))
 
 const commands = []
+commands.push('git status')
 commands.push('git config --global user.email "travis@travis-ci.org"')
 commands.push('git config --global user.name "Travis CI"')
 commands.push('git remote rm origin')
