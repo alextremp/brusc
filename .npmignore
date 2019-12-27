@@ -5,6 +5,7 @@ node_modules
 src
 deploy.js
 .gitignore
+.version_branch
 .idea
 .travis.yml
 .github
