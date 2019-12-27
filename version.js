@@ -13,14 +13,14 @@ fs.writeFileSync('package.json', JSON.stringify(config, null, 2))
 const commands = []
 commands.push('git config --global user.email "travis@travis-ci.org"')
 commands.push('git config --global user.name "Travis CI"')
-commands.push('git add package.json')
-commands.push(`git commit -m "Update version to: ${releaseVersion}"`)
 commands.push('git remote rm origin')
 commands.push(`git remote add origin ${GIT_ORIGIN} > /dev/null 2>&1`)
+commands.push('git add package.json')
+commands.push(`git commit -m "Update version to: ${releaseVersion}"`)
 commands.push('git push origin master --quiet')
 commands.push(`npm publish${isBeta ? ' --tag beta' : ''}`)
 
 commands.forEach(command => {
   console.log('>' + command)
-  shell.exec(command)
+  shell.exec(command, {fatal: true})
 })
