@@ -40,8 +40,6 @@ const branch = isBeta ? `beta/${releaseVersion}` : 'master'
 commands.push('git config --global user.email "alextremp@hotmail.com"')
 commands.push('git config --global user.name "Alex Castells"')
 commands.push(`git checkout -b ${branch}`)
-commands.push(`git push --repo=${GIT_ORIGIN} --set-upstream origin ${branch}`)
-commands.push(`git remote rm origin`)
 commands.push(`git remote add origin ${GIT_ORIGIN} > /dev/null 2>&1`)
 commands.push('git add package.json')
 commands.push(`git commit -m "${COMMIT_MESSAGE}" --author="${COMMIT_AUTHOR}"`)
