@@ -39,10 +39,10 @@ const NOLOG = ' > /dev/null 2>&1'
 const branch = isBeta
   ? `develop/v${releaseVersion.replace(/\.[0-9]+\.[0-9]+-beta\.[0-9]+/, '')}`
   : 'master'
-commands.push(`git checkout -b ${branch}`)
-commands.push(`git push --repo=${REPO} --set-upstream origin ${branch}${NOLOG}`)
 commands.push(`git remote rm origin`)
 commands.push(`git remote add origin ${REPO}${NOLOG}`)
+commands.push(`git checkout -b ${branch}`)
+// commands.push(`git push --repo=${REPO} --set-upstream origin ${branch}${NOLOG}`)
 commands.push('git add package.json')
 commands.push(`git commit -m "${MESSAGE}"${NOLOG}`)
 // commands.push(`npm publish${isBeta ? ' --tag beta' : ''}`)
