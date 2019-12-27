@@ -20,7 +20,7 @@ const runCommand = function(i = 0) {
     console.log('>' + command)
     console.log('> exit code', code)
     console.log('> ', stdout)
-    if (code !== 0) {
+    if (code !== 0 && code !== 128) {
       console.log('> ', stderr)
       shell.exit(code)
     }
