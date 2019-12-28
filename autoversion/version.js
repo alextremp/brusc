@@ -24,7 +24,7 @@ runner.addShell(`git remote add origin ${REPO_URL}`)
 runner.addShell(`git checkout -b ${branch}`)
 runner.addShell('git add package.json')
 runner.addShell(`git commit -m "${MESSAGE}"`)
-// commands.push(`npm publish${isBeta ? ' --tag beta' : ''}`)
+runner.addShell(`npm publish${isBeta ? ' --tag beta' : ''}`)
 runner.addShell(`git push --repo=${REPO_URL} origin ${branch} --quiet`)
 
 runner.run()

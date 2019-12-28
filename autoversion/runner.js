@@ -3,14 +3,14 @@ const shell = require('shelljs')
 
 const queue = []
 
-const run = function() {
+const run = () => {
   const command = queue.shift()
   if (!command) {
     console.log('Finished')
     shell.exit(0)
   }
   command()
-  const tid = setTimeout(function() {
+  const tid = setTimeout(() => {
     clearTimeout(tid)
     run()
   }, 500)
