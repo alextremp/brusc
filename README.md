@@ -39,7 +39,7 @@ npm install brusc --save
 
 `ioc.js`
 ```ecmascript 6
-import {iocInjector} from '../../../../main'
+import {iocInjector} from 'brusc'
 
 const IOC_CONTEXT = 'test-sample'
 const inject = key => iocInjector(IOC_CONTEXT)(key)
@@ -60,6 +60,8 @@ export {inject, IOC_CONTEXT}
 `SampleInitializer.js`
 ```ecmascript 6
 // imports...
+import {iocModule} from 'brusc'
+
 class SampleInitializer {
   static init() {
     iocModule({
