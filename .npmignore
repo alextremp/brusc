@@ -9,4 +9,5 @@ deploy.js
 .idea
 .travis.yml
 .github
-*.md
+CODE_OF_CONDUCT.md
+versiona.js
