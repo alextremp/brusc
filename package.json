@@ -1,6 +1,6 @@
 {
   "name": "brusc",
-  "version": "0.0.16",
+  "version": "1.0.0-beta.3",
   "description": "IOC Container for Effective JS development",
   "main": "dist",
   "keywords": [
@@ -14,6 +14,7 @@
   "license": "MIT",
   "repository": "github:alextremp/brusc",
   "bugs": "https://github.com/alextremp/brusc/issues",
+  "runkitExampleFilename": "runkitExample.js",
   "scripts": {
     "clean": "rm -Rf dist",
     "phoenix": "rm -Rf node_modules && rm -Rf package-lock.json && npm i",
@@ -24,7 +25,7 @@
     "lint": "sui-lint js",
     "check": "npm run lint && npm run test",
     "build": "npm run clean && babel src/main --out-dir dist",
-    "version": "node version.js"
+    "versiona": "node versiona.js"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.5",
@@ -38,7 +39,8 @@
     "codecov": "^3.6.1",
     "mocha": "5.2.0",
     "nyc": "^15.0.0",
-    "shelljs": "^0.8.3"
+    "shelljs": "^0.8.3",
+    "versiona": "^3.0.0"
   },
   "babel": {
     "plugins": [
