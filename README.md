@@ -1,9 +1,13 @@
-# brusc [![NPM Module](https://img.shields.io/npm/v/brusc.svg)](https://www.npmjs.com/package/brusc)
+<div style="width=100%;text-align=center"><img alt="brusc logo" src="https://repository-images.githubusercontent.com/229852502/a3866d00-2cff-11ea-9ac7-ece7762a2853" align="center" width="300"></div>
 
+[![NPM Module](https://img.shields.io/npm/v/brusc.svg)](https://www.npmjs.com/package/brusc)
 [![Build Status](https://travis-ci.org/alextremp/brusc.svg?branch=master)](https://travis-ci.org/alextremp/brusc)
 [![codecov](https://codecov.io/gh/alextremp/brusc/branch/master/graph/badge.svg)](https://codecov.io/gh/alextremp/brusc)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/alextremp/brusc.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/alextremp/brusc/context:javascript)
 [![Maintainability](https://api.codeclimate.com/v1/badges/82646b2e45f3f84bf903/maintainability)](https://codeclimate.com/github/alextremp/brusc/maintainability)
+
+
+# brusc 
 
 **brusc** is a lightweight but powerful Inversion of Control Container for Javascript projects (Node/Browser).
 
@@ -13,7 +17,7 @@
 * :factory: No proxies, your provided instances will stay the same that you instantiate 
 * :muscle: Improve your project architecture writing less code
 
-## Features
+# Features
 * :white_check_mark: Support for declaring singletons
 * :white_check_mark: Support for declaring prototypes
 * :white_check_mark: Support for AOP (aspect oriented programming) using adapters 
@@ -27,7 +31,7 @@
 * [API Reference](#api-reference)
 * [Contributing](#contributing)
 
-## Usage
+# Usage
 
 **Install**
 
@@ -102,12 +106,12 @@ class Sample {
 }
 ```
 
-### Examples
+## Examples
 
 * Check the runkit sample [here](https://npm.runkit.com/brusc)
 * Check the tested sample [here](https://github.com/alextremp/brusc/tree/master/src/test/sample)
 
-## API Reference
+# API Reference
 
 **brusc** exports these methods:
 
@@ -115,7 +119,7 @@ class Sample {
 * **iocInjector** to use the module instances assigning a container's instance to a variable
 * **iocReset** to hard reset a module (not needed in most cases, was created for benchmarking/profiling purposes)
 
-### iocModule
+## iocModule
 
 THe iocModule function creates the Container that will keep the injectable dependencies declaration.
 
@@ -216,11 +220,11 @@ It's the key used in a **singleton** or a **prototype** declaration.
 **Trying to inject a dependency that is not declared in the container will cause an exception**. 
 
 
-## Contributing
+# Contributing
 
 :wrench: Maintenance info
 
-### Available Scripts
+## Available Scripts
 
 _npm run_...
 * **phoenix** to reset the project reinstalling its dependencies
@@ -231,13 +235,13 @@ _npm run_...
 * **build** to build the project
 * **versiona** to publish a new version of the library (in Travis CI)
 
-### Create a PR
+## Create a PR
 
 Use the PR template to explain the better possible:
 * Why the PR should be merged
 * How can be checked
 
-### Deploying
+## Deploying
 
 This project uses Travis CI for:
 * PR validation
