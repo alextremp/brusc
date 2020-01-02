@@ -40,7 +40,7 @@
     "mocha": "5.2.0",
     "nyc": "^15.0.0",
     "shelljs": "^0.8.3",
-    "versiona": "^3.0.0"
+    "versiona": "^4.0.0"
   },
   "babel": {
     "plugins": [

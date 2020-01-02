@@ -8,13 +8,7 @@ cache:
 before_install:
   - npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
 script:
-  - npm run check
   - npm run coverage:ci
-  - |
-    echo TRAVIS_BRANCH=$TRAVIS_BRANCH - TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST - TRAVIS_TAG=$TRAVIS_TAG
-    if [[ $TRAVIS_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-beta\.[0-9]+)?$ ]]; then
-      echo DEPLOY VERSION - TRAVIS_BRANCH=$TRAVIS_BRANCH, PR=$PR, BRANCH=$BRANCH
-      TRAVIS_TAG=$TRAVIS_TAG GH_TOKEN=$GH_TOKEN npm run versiona
-    fi
+  - npm run check && TRAVIS_TAG=$TRAVIS_TAG GH_TOKEN=$GH_TOKEN npm run versiona
 after_success:
   - bash <(curl -s https://codecov.io/bash)
