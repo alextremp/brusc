@@ -112,7 +112,7 @@ class Sample {
 **brusc** exports these methods:
 
 * **iocModule** to create a new IoC module with instances declaration
-* **iocInjector** to use the module instances assigning a built instance to a variable
+* **iocInjector** to use the module instances assigning a container's instance to a variable
 * **iocReset** to hard reset a module (not needed in most cases, was created for benchmarking/profiling purposes)
 
 ### iocModule
@@ -138,8 +138,8 @@ Specification:
 
 **module**
 
-The module should be something that identifies your module (p.ex. your package name). Brusc exposes its methods over a singleton IOC manager where you'll register the module, that will be unique in the manager.<br>
-In integration-test contexts, you will be able to create an upper-container to mock the instances you need to be mocked, by activating the **chain** flag in the test context module initialization.
+The module should be something that identifies your module (p.ex. your package name). Brusc exposes its methods over a singleton IOC manager where you'll register the module which will be unique in the manager.<br>
+> In integration-test contexts, you will be able to create an upper-container to mock the instances you need to be mocked, by activating the **chain** flag in the test context module initialization.
 
 _The module parameter is required_ 
 
@@ -151,13 +151,13 @@ You can declare these types of instance, by using the named parameter that will 
 
 * **singleton**
 
-A Singleton is an instance that will be instantiated 1 time, saved in the container, and each time that is required for injection, the same instance will be returned.<br>
+A Singleton is an instance that will be instantiated 1 time (on the first injection request, or eagerly), saved in the container, and each time that is required for injection, the saved instance will be returned.<br>
 UseCases, Services, Repositories, ... should be Singletons.
 
   * Parameters:
     * key: a string, class declaration, ... Anything that can identify the instance declaration. It's what will be used next to inject the dependency.
-    * instance builder: a no-arg function that will be called by the IoC Container when a new instance should be created
-    * lazy (defaults to _true_): a boolean, indicating if the instance should be lazy (true = will be initialized when required for dependency injection) or eager (false = will be instantiated in the IoC container after it has been initialized).
+    * instance builder: a no-arg function that will be called by the IoC Container when it needs to provide an instance that has not been initialized yet.
+    * lazy (defaults to _true_): a boolean, indicating if the instance should be lazy (true = will be initialized when required for dependency injection) or eager (false = will be instantiated in the IoC container just after the container has been initialized).
 
 * **prototype**
 
@@ -168,20 +168,23 @@ Prototypes are used when the instance should keep an internal state that may be 
   
 * **adapter**
 
-The adapter function will allow you to return an adapted instance of the received one before it's injected.<br>
+The adapter function will allow you to return an adapted instance of the received one (a recently initialized instance) before it's saved in the IoC container.<br>
 This enables [AOP](https://en.wikipedia.org/wiki/Aspect-oriented_programming), letting you to return:
 - a Proxy over the instance (p.ex. to log every method on every instance)
 - a Custom Decorator over the instance ([decorator pattern](https://en.wikipedia.org/wiki/Decorator_pattern))
 - ... the modified instance you need!
 
-Note that the adapter receives the _key_ and _module_ parameters also. The key parameter gives you the possibility to apply some features only on some keys. The module parameter is intended to be used in big/modular projects to apply AOP features at top-level initialization, to all containers instances, or to some modules only.
+Parameters:
+- instance: the recently initialized instance which has not been saved in the container yet.
+- key: the assigned key in the container, will allow you to adapt specific instances only if used.
+- module: the module ID would allow you to adapt other app's module instances in combination with the chain parameter (not necessary in most of the cases)
 
 * **chain** 
 
-The chain boolean (defaults to false) allows you to call the iocModule method, more than once.<br>
+The chain boolean (defaults to false) allows you to call the iocModule method with the same module ID more than once, without loosing the created container configuration on the next time it's called (in normal situations you'll need to call the iocModule function just 1 time).<br>
 * When chain is false, each iocModule call will replace the module's container by a new container with the received initializer function.
-* When chain is true, the iocModule will create a ChainedContainer. All will be the same, but when iocModule is called another time, the new invocation will be chained to the previous container.<br>
-  * In that case, when any instance is requested for injection, the IoC Chained Container will lookup the first container initializer for the instance, return it if it's found, and look up for the second container initializer if the first did not resolved to any instance.
+* When chain is true, the iocModule will create a chained container. All will be the same, but when iocModule is called another time, the new invocation will be chained to the previous container.<br>
+  * In that case, when any instance is requested for injection, the IoC chained Container will lookup the first container initializer for the instance, return it if it's found, and look up for the second container initializer if the first did not resolved to any instance. The adapters will be chained also, returning an accumulated adapter through the chain of containers. 
   
 ### iocInjector
 
@@ -194,7 +197,7 @@ const myInstance = iocInjector('module_id')('key')
 It can be used that way but **a cleaner/maintenable usage**, would be to declare the prepared injector for the module this way:
  
 ```ecmascript 6
-const inject = iocInjector('module_id')
+const inject = key => iocInjector('module_id')(key)
 //...
 const myInstance = inject('key')
 ```
