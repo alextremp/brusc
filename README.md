@@ -1,4 +1,4 @@
-<div style="width=100%;text-align=center"><img alt="brusc logo" src="https://repository-images.githubusercontent.com/229852502/a3866d00-2cff-11ea-9ac7-ece7762a2853" align="center" width="300"></div>
+<img alt="brusc logo" src="https://repository-images.githubusercontent.com/229852502/a3866d00-2cff-11ea-9ac7-ece7762a2853" align="center" width="300">
 
 [![NPM Module](https://img.shields.io/npm/v/brusc.svg)](https://www.npmjs.com/package/brusc)
 [![Build Status](https://travis-ci.org/alextremp/brusc.svg?branch=master)](https://travis-ci.org/alextremp/brusc)
