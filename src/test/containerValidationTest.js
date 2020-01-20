@@ -55,7 +55,7 @@ describe('container validation test', () => {
       iocModule({
         module: 'my module',
         initializer: ({singleton}) => {
-          singleton('instance', () => {})
+          singleton('instance', () => ({}))
         },
         adapter: () => undefined
       })

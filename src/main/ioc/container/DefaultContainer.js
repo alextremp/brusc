@@ -5,6 +5,7 @@ import {InvalidInstanceKeyError} from '../error/InvalidInstanceKeyError'
 import {InvalidInstanceBuilderError} from '../error/InvalidInstanceBuilderError'
 import {InstantiationError} from '../error/InstantiationError'
 import {InvalidAdapterError} from '../error/InvalidAdapterError'
+import {EmptyAdaptedInstanceError} from '../error/EmptyAdaptedInstanceError'
 
 class DefaultContainer extends Container {
   constructor({module, adapter}) {
@@ -75,9 +76,7 @@ class DefaultContainer extends Container {
   _adaptedInstance(key, instance) {
     const adapted = this._adapter(instance, key, this._module)
     if (!adapted) {
-      throw new InvalidAdapterError(
-        `Adapter function did not return an assignable value for [${key}]'`
-      )
+      throw new EmptyAdaptedInstanceError(key)
     }
     return adapted
   }
