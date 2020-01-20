@@ -1,6 +1,6 @@
 {
   "name": "brusc",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "IOC Container for Effective JS development",
   "main": "dist",
   "keywords": [
