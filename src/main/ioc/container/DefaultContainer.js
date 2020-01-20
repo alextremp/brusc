@@ -58,6 +58,7 @@ class DefaultContainer extends Container {
   _provideSingleton(key) {
     if (!this._singletons.has(key)) {
       const instance = this._registry.get(key)()
+      this._guardBuilderReturnedInstance(key, instance)
       const adapted = this._adaptedInstance(key, instance)
       this._singletons.set(key, adapted)
     }
@@ -66,6 +67,7 @@ class DefaultContainer extends Container {
 
   _providePrototype(key) {
     const instance = this._registry.get(key)()
+    this._guardBuilderReturnedInstance(key, instance)
     const adapted = this._adaptedInstance(key, instance)
     return adapted
   }
@@ -119,6 +121,15 @@ class DefaultContainer extends Container {
   _guardAdapterIsAFunction(adapter) {
     if (typeof adapter !== 'function') {
       throw new InvalidAdapterError('Adapter must be a function')
+    }
+  }
+
+  _guardBuilderReturnedInstance(key, instance) {
+    if (typeof instance === 'undefined' || instance === null) {
+      throw new InvalidInstanceBuilderError(
+        key,
+        'Builder did not return an instance'
+      )
     }
   }
 }
