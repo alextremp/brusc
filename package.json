@@ -28,13 +28,14 @@
     "versiona": "node versiona.js"
   },
   "devDependencies": {
-    "@babel/cli": "^7.7.5",
-    "@babel/core": "^7.7.5",
-    "@babel/plugin-transform-modules-commonjs": "^7.7.5",
-    "@babel/register": "^7.7.4",
-    "@babel/runtime": "^7.7.6",
-    "@s-ui/lint": "^3.14.0",
+    "@babel/cli": "^7.8.0",
+    "@babel/core": "^7.8.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.8.0",
+    "@babel/register": "^7.8.0",
+    "@babel/runtime": "^7.8.0",
+    "@s-ui/lint": "3",
     "babel-loader": "^8.0.6",
+    "babel-preset-sui": "^2.14.0",
     "chai": "^4.2.0",
     "codecov": "^3.6.1",
     "mocha": "5.2.0",
@@ -43,6 +44,9 @@
     "versiona": "^4.0.0"
   },
   "babel": {
+    "presets": [
+      "sui"
+    ],
     "plugins": [
       "@babel/plugin-transform-modules-commonjs"
     ]
