@@ -3,7 +3,7 @@ class IOCError extends Error {
     super()
     this.message = message + (cause ? ` [${cause.message}]` : '')
     this.name = this.constructor.name
-    this.stack = new Error(message).stack
+    this.stack = new Error(this.message).stack
     this.cause = cause
   }
 
