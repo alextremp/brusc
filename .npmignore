@@ -11,3 +11,4 @@ deploy.js
 .github
 CODE_OF_CONDUCT.md
 versiona.js
+mocha.config.js
