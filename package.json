@@ -38,7 +38,7 @@
     "babel-loader": "8.0.6",
     "babel-preset-sui": "3",
     "chai": "4.2.0",
-    "codecov": "3.6.5",
+    "codecov": "3.7.1",
     "mocha": "5.2.0",
     "nyc": "15.0.0",
     "shelljs": "0.8.3",
