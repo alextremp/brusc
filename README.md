@@ -129,17 +129,20 @@ import inject from './inject'
 
 describe('MovieApplication', () => {
   it('should request the movies collection', async () => {
-    
+    const httpClientMock = {
+      fetch: (url) => Promise.resolve(...)
+    }
+    const fetchSpy = sinon.spy(httpClientMock, 'fetch')
+
     // this instance providers will be used by the Brusc Container instead of defined ones,
     // and defaults are cleared after container creation to avoid being used in next creations 
     // of another tests, so instance providers can be specified for each test and also be declared in a beforeEach. 
     inject.defaults = {
-      httpClient: () => ({
-        fetch: (url) => Promise.resolve(...)
-      }) 
+      httpClient: () => httpClientMock
     }
-    const fetchSpy = sinon.spy(inject.defaults.httpClient, 'fetch')
 
+    // assuming the example of MovieApplicationInitializer in the "Defining the Brusc Container" section, 
+    // init will create the container to be used in the real Movie Application 
     const movieApplication = MovieApplicationInitializer.init()
     await movieApplication.getMovies({title: 'robocop'})
     

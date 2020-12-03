@@ -124,6 +124,34 @@ describe('Brusc', () => {
       const k = inject('k')
       expect(k).to.equal('k_mock')
     })
+    it('should allow further container creations after defaults are consumed', () => {
+      const givenOriginalMessage = 'hello world'
+      const givenMockedMessage = 'hello from defaults'
+
+      const helloMock = {
+        message: () => givenMockedMessage
+      }
+      inject.defaults = {
+        hello: () => helloMock
+      }
+
+      Brusc.define(inject)
+        .singleton('hello', () => ({
+          message: () => givenOriginalMessage
+        }))
+        .create()
+
+      let message = inject('hello').message()
+      expect(message).to.equal(givenMockedMessage)
+
+      Brusc.define(inject)
+        .singleton('hello', () => ({
+          message: () => givenOriginalMessage
+        }))
+        .create()
+      message = inject('hello').message()
+      expect(message).to.equal(givenOriginalMessage)
+    })
   })
   describe('given invalid definition', () => {
     it('should fail if inject is not a function', () => {

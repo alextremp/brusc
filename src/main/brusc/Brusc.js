@@ -51,6 +51,7 @@ export class Brusc {
       instanceProviders: this._instanceProviders,
       adapters: this._adapters
     })
+    this._inject.defaults = undefined
     this._inject.provide = key => container.provide(key)
     container.loadEagerInstances()
   }
