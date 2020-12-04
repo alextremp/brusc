@@ -9,20 +9,21 @@
 
 # brusc 
 
-**brusc** is a lightweight but powerful Inversion of Control Container for Javascript projects (Node/Browser).
+**brusc** is a lightweight but powerful Dependency Container to enable Inversion Of Control for Javascript projects (Node/Browser).
 
 * :rocket: Zero dependencies, No extra requirements
 * :zap: Lightweight
 * :fast_forward: Easy to use
 * :factory: No proxies, your provided instances will stay the same that you instantiate 
-* :muscle: Improve your project architecture writing less code
+* :muscle: Improve your project's architecture writing less code
 
 # Features
 * :white_check_mark: Support for declaring singletons
 * :white_check_mark: Support for declaring prototypes
-* :white_check_mark: Support for AOP (aspect oriented programming) using adapters 
+* :white_check_mark: Support for cross-cutting actions over registered instances 
 * :white_check_mark: Does not require declaring instances in any specific order
 * :white_check_mark: Inject your instances where you need them
+* :white_check_mark: Easy integration testing with mocked instances support
 
 **Index**
 
@@ -33,191 +34,211 @@
 
 # Usage
 
-**Install**
+Start using Brusc:
+- [Install](#install)
+- [Creating an inject function](#creating-an-inject-function)
+- [Defining the Brusc Container](#defining-the-brusc-container)
+- [Using the inject function](#using-the-inject-function)
+- [Integration testing](#integration-testing)
+
+Also: 
+- [Full Brusc API](#full-brusc-api)
+- [Contributing](#contributing)
+
+## Install
 
 ```
 npm install brusc --save
 ```
 
-**Create your IoC context** to be used in the classes / functions / wherever declaring dependencies to inject:
+## Creating an inject function
 
-`ioc.js`
+Create an `inject` function shared across your context to be used in the classes / functions / wherever declaring dependencies to inject:
+
+`inject.js`
 ```ecmascript 6
-import {iocInjector} from 'brusc'
-
-const IOC_CONTEXT = 'test-sample'
-const inject = key => iocInjector(IOC_CONTEXT)(key)
-
-export {inject, IOC_CONTEXT}
+const inject = key => inject.provide(key)
+export default inject
 ```
 
-> 'test-sample' would be your package name. <br>
->
-> To inject a dependency, you can use the iocInjector directly, for example:<br>
->
->> _const instance = iocInjector('TestSample')('MyInstanceImpl')_<br>
->
-> But your code will look cleaner preparing the _inject_ function for a specific _key_ in your module.
+> The `provide` function will be added by Brusc in next step. This is needed to be created this way in order to enable any class/function to use it like `aProperty=inject('aPropertyKey'')`.
 
-**Declare your instances** into the module:
+## Defining the Brusc Container
 
-`SampleInitializer.js`
+Define your `inject` bindings to a Brusc Container:
+
+`MovieApplicationInitializer.js`
 ```ecmascript 6
 // imports...
-import {iocModule} from 'brusc'
+import Brusc from 'brusc'
+import inject from './inject'
 
-class SampleInitializer {
+export class MovieApplicationInitializer {
   static init() {
-    iocModule({
-      module: IOC_CONTEXT,
-      initializer: ({singleton, prototype}) => {
-        singleton(SampleInterface, () => new SampleInterfaceImpl())
-        singleton(SampleSingletonClass, () => new SampleSingletonClass())
-        singleton('sampleSingletonFunction', () => sampleSingletonFactoryFunction())
-        prototype(SamplePrototypeClass, () => new SamplePrototypeClass())
-        prototype('samplePrototypeFunction', () => samplePrototypeFactoryFunction())
-      }
-    })
-    return new Sample()
+    Brusc.define(inject)
+      .singleton('getMoviesUseCase', () => new GetMoviesUseCase())
+      .singleton('saveMovieUseCase', () => new SaveMovieUseCase())
+      .singleton('movieRepository', () => new MovieRepositoryHttpImpl())
+      .singleton('httpClient', () => new AxiosHttpClient())
+      .create()
+      
+    return new MovieApplication()
+  } 
+}
+```
+
+## Using the inject function
+
+Use the inject function to assign the instances where they're needed.
+
+In the last snippet, suppose that the `MovieApplication` is the library facade, which uses the Use Cases, and each one need the `MovieRepository` which also will need a Http Client to perform the actions.
+
+After defining the `inject` function in Brusc and creating the container with instance provider declarations like `.singleton(key => instance_provider_function)` you'll be able to create each application component (use case, service, repository, ...) assigning its dependencies in the constructor (preferably) like:
+
+`GetMoviesUseCase.js`
+```ecmascript 6
+import inject from './inject'
+
+export class GetMoviesUseCase {
+  constructor({movieRepository = inject('movieRepository')} = {}) {
+    // ...  
   }
 }
 ```
 
-**Use the injector** to assign the instances where they're needed
-
-`Sample.js`
+`MovieApplication.js`
 ```ecmascript 6
-// ...
-class Sample {
-  constructor({
-    singletonA = inject(SampleSingletonClass),
-    singletonB = inject(SampleSingletonClass),
-    prototypeA = inject(SamplePrototypeClass),
-    prototypeB = inject(SamplePrototypeClass),
-    textFunction = inject('sampleSingletonFunction')
-  } = {}) {
-    this._singletonA = singletonA
-    this._singletonB = singletonB
-    this._prototypeA = prototypeA
-    this._prototypeB = prototypeB
-    this._textFunction = textFunction
+import inject from './inject'
+
+export class MovieApplication {
+  constructor({getMoviesUseCase = inject('getMoviesUseCase'), saveMovieUseCase = inject('saveMovieUseCase')} = {}) {
+    // ...  
   }
-// ...
 }
 ```
 
-## Examples
+And so on, easy like that :)
 
-* Check the runkit sample [here](https://npm.runkit.com/brusc)
-* Check the tested sample [here](https://github.com/alextremp/brusc/tree/master/src/test/sample)
+## Integration testing
 
-# API Reference
-
-**brusc** exports these methods:
-
-* **iocModule** to create a new IoC module with instances declaration
-* **iocInjector** to use the module instances assigning a container's instance to a variable
-* **iocReset** to hard reset a module (not needed in most cases, was created for benchmarking/profiling purposes)
-
-## iocModule
-
-THe iocModule function creates the Container that will keep the injectable dependencies declaration.
+You'll be able to test the your full application's facade API the same way it'll be used, allowing instance mocks replacing defined instance providers if needed:
 
 ```ecmascript 6
-iocModule({
-  module: 'module_id',
-  initializer: ({singleton, prototype}) => {
-    // ...
-    singleton('instanceID1', () => new InstanceImpl1())
-    singleton('instanceID2', () => new InstanceImpl2(), false)
-    prototype('instanceID3', () => new InstanceImpl3())
-    // ...
-  },
-  adapter: (instance, key, module) => myInstanceAdapter(instance),
-  chain: false
+// ...
+import inject from './inject'
+
+describe('MovieApplication', () => {
+  it('should request the movies collection', async () => {
+    const httpClientMock = {
+      fetch: (url) => Promise.resolve(...)
+    }
+    const fetchSpy = sinon.spy(httpClientMock, 'fetch')
+
+    // this instance providers will be used by the Brusc Container instead of defined ones,
+    // and defaults are cleared after container creation to avoid being used in next creations 
+    // of another tests, so instance providers can be specified for each test and also be declared in a beforeEach. 
+    inject.defaults = {
+      httpClient: () => httpClientMock
+    }
+
+    // assuming the example of MovieApplicationInitializer in the "Defining the Brusc Container" section, 
+    // init will create the container to be used in the real Movie Application 
+    const movieApplication = MovieApplicationInitializer.init()
+    await movieApplication.getMovies({title: 'robocop'})
+    
+    expect(fetchSpy.getCall(0).args[0]).to.include('title=%robocop%')
+  })
 })
 ```
 
-Specification:
+# Full Brusc API
 
-**module**
+Brusc acts as a Container builder exposing the methods:
 
-The module should be something that identifies your module (p.ex. your package name). Brusc exposes its methods over a singleton IOC manager where you'll register the module which will be unique in the manager.<br>
-> In integration-test contexts, you will be able to create an upper-container to mock the instances you need to be mocked, by activating the **chain** flag in the test context module initialization.
+## .define
 
-_The module parameter is required_ 
+`.define(injectFunction)`
 
-**initializer**
+Receives an `injectFunction` to which the Container's instance provider will be assigned in the `injectFunction.provide(key)` function.
+> Should be called only once in the Brusc definition chain.
 
-The initializer function will be where you'll declare the instances to be available in your IoC module's Container.
+See [Creating an inject function](#creating-an-inject-function)
 
-You can declare these types of instance, by using the named parameter that will be received by Brusc invocation during the IoC module creation:
+## .singleton
 
-* **singleton**
+`.singleton(key, instanceProviderFunction, isEager)`
 
-A Singleton is an instance that will be instantiated 1 time (on the first injection request, or eagerly), saved in the container, and each time that is required for injection, the saved instance will be returned.<br>
-UseCases, Services, Repositories, ... should be Singletons.
+Binds a `key` to an instance provider function to declare a singleton instance in the Container.
+> A singleton is an instance which after first instantiation will be kept in the container and any further requests to the container for the same key will be resolved with that first instantiated instance.
+>
+> This method can be called from zero times to each key/singleton instance provider binding.
 
-  * Parameters:
-    * key: a string, class declaration, ... Anything that can identify the instance declaration. It's what will be used next to inject the dependency.
-    * instance builder: a no-arg function that will be called by the IoC Container when it needs to provide an instance that has not been initialized yet.
-    * lazy (defaults to _true_): a boolean, indicating if the instance should be lazy (true = will be initialized when required for dependency injection) or eager (false = will be instantiated in the IoC container just after the container has been initialized).
+- `key` _(required)_ must be any value assignable to a Map key (p.ex. a string like `'userRepository'`, but also a class declaration like `UserRepository` if using class as interface declarations would be accepted).
+- `instanceProviderFunction` _(required)_ must be a function which must return a value when called, no matter if it's a constant, a function or a new class instantiation.
+- `isEager` _(optional, defaults to false)_ indicates if an instance must be loaded just when the Brusc container ends with its declaration (eager), or will be instantiated on the first `inject(key)` usage (lazy).
 
-* **prototype**
+## .prototype
 
-A Prototype is an instance that will be instantiated each time that is required for injection.<br>
-Prototypes are used when the instance should keep an internal state that may be different depending on where they're injected (p.ex. a debounce operator, may have different time limits, callback, ... but the Debouncer could be the same, instantiated for N injections).
+`.prototype(key, instanceProviderFunction)`
 
-  * Parameters: Same parameters than the _singleton_ method, excluding the _lazy_ parameter, as a Prototype will always be lazy.
-  
-* **adapter**
+Binds a `key` to an instance provider function to declare prototype instances in the Container.
+> A prototype will be instantiated for each `inject(key)` usage, returning a fresh value for the injection.
+>
+> In most situations, singletons are preferrable over prototypes, but if a component must have a mutable state consider using prototypes.
+>
+> This method can be called from zero times to each key/prototype instance provider binding.
 
-The adapter function will allow you to return an adapted instance of the received one (a recently initialized instance) before it's saved in the IoC container.<br>
-This enables [AOP](https://en.wikipedia.org/wiki/Aspect-oriented_programming), letting you to return:
-- a Proxy over the instance (p.ex. to log every method on every instance)
-- a Custom Decorator over the instance ([decorator pattern](https://en.wikipedia.org/wiki/Decorator_pattern))
-- ... the modified instance you need!
+- `key` _(required)_ must be any value assignable to a Map key.
+- `instanceProviderFunction` _(required)_ must be a function which must return a value when called, no matter if it's a constant, a function or a new class instantiation.
 
-Parameters:
-- instance: the recently initialized instance which has not been saved in the container yet.
-- key: the assigned key in the container, will allow you to adapt specific instances only if used.
-- module: the module ID would allow you to adapt other app's module instances in combination with the chain parameter (not necessary in most of the cases)
+## .adapter
 
-* **chain** 
+`.adapter({name, match, adapt})`
 
-The chain boolean (defaults to false) allows you to call the iocModule method with the same module ID more than once, without loosing the created container configuration on the next time it's called (in normal situations you'll need to call the iocModule function just 1 time).<br>
-* When chain is false, each iocModule call will replace the module's container by a new container with the received initializer function.
-* When chain is true, the iocModule will create a chained container. All will be the same, but when iocModule is called another time, the new invocation will be chained to the previous container.<br>
-  * In that case, when any instance is requested for injection, the IoC chained Container will lookup the first container initializer for the instance, return it if it's found, and look up for the second container initializer if the first did not resolved to any instance. The adapters will be chained also, returning an accumulated adapter through the chain of containers. 
-  
-### iocInjector
+Allow instances to be decorated / proxied / adapted to any custom need, based on key matching, when instances are instantiated in the Container and before they are injected.
 
-The iocInjector gives access to the injectable dependencies from the Container.
+> This method can be called from zero times to each instance adapter requirement
+
+- `name` _(optional, but defaults to UnnamedAdapter)_ the name of the adapter, only for debug / error trace intentions.
+- `match(key)` _(required)_ is a function that will be used to detect instances to which apply the modification if returns `true`.
+- `adapt(instance, key)` _(required)_ is a function that must return an instance which can be the original one, but also a decorated one, proxied, ... 
 
 ```ecmascript 6
-const myInstance = iocInjector('module_id')('key')
+.adapter({
+  name: 'UseCaseTimeLogger',
+  match: key => key.endsWith('UseCase'),
+  adapt: (instance, key) => ({ // just for the sample, a specific class would be better :)
+    execute: async params => {
+      const start = Date.now()
+      try {
+        const result = await instance.execute(params)
+        return result
+      } finally {
+        console.log(`${key} spent ${Date.now() - start}ms to execute`)
+      }
+    }
+  })
+})
 ```
 
-It can be used that way but **a cleaner/maintenable usage**, would be to declare the prepared injector for the module this way:
- 
-```ecmascript 6
-const inject = key => iocInjector('module_id')(key)
-//...
-const myInstance = inject('key')
+In this case, instead of injecting the original instance defined with p.ex. `.singleton('getMoviesUseCase')`, the injected use case will be a decorated instance to measure the time spent in the use case's `execute` method.
+
+## .create
+
+`.create`
+
+Ends with the Brusc Container declaration for the `inject` method and assigns a `provide` function to it.
+
+So, after this, the given `inject` function will be enabled for dependency injection, using it like:
+```
+const anInstance = inject('anInstanceKey')
 ```
 
-Specification:
+> Remember that to allow this, the inject function should be declared like `export const inject = key => inject.provide(key)` 
 
-* **module**
-
-The module ID. [See the iocModule section](#iocmodule) for details.
-
-* **key**
-
-The key that identifies an injectable dependency from the IoC container.<br>
-It's the key used in a **singleton** or a **prototype** declaration.
-
-**Trying to inject a dependency that is not declared in the container will cause an exception**. 
+- Trying to inject a dependency before the `create` method is called on Brusc declaration will cause an exception. 
+- Trying to inject a dependency that is not declared in the container as singleton or prototype will cause an exception.
+- If any given instance provider function fails on instantiation or an adapter fails to do its job, the thrown error will be raised. 
 
 
 # Contributing
@@ -237,7 +258,7 @@ _npm run_...
 
 ## Create a PR
 
-Use the PR template to explain the better possible:
+Use the PR template to explain:
 * Why the PR should be merged
 * How can be checked
 
@@ -251,7 +272,7 @@ This project uses Travis CI for:
 To create a new Release, take in mind:
 * The Release Tag must be named *vX.Y.Z* where X.Y.Z are the _semver_ numbers that will correspond to the published package's version.
 * Travis CI will launch [versiona](https://www.npmjs.com/package/versiona) which will:
-  * Update the package.json to the X.Y.Z version set in the Release Tag
+  * Update & commit to master the package.json to the X.Y.Z version set in the Release Tag
   * Publish the NPM package with the X.Y.Z version
 
 
