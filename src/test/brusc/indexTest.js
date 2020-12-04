@@ -29,6 +29,13 @@ describe('Brusc', () => {
       const x2 = inject('x')
       expect(x1.rnd).to.not.equal(x2.rnd)
     })
+    it('should not accept instance providers redefinition', () => {
+      expect(() =>
+        Brusc.define(inject)
+          .singleton('a', () => ({}))
+          .prototype('a', () => ({}))
+      ).to.throw('already defined')
+    })
     it('should allow instance adapters', () => {
       const givenOriginalResult = 'is adapted?'
       const givenInstanceFactory = () => ({

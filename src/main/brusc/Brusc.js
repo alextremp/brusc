@@ -18,6 +18,7 @@ export class Brusc {
   }
 
   singleton(key, provider, isEager) {
+    this._guardKeyNotDefinedYet(key)
     this._instanceProviders.set(
       key,
       new InstanceProvider({
@@ -30,6 +31,7 @@ export class Brusc {
   }
 
   prototype(key, provider) {
+    this._guardKeyNotDefinedYet(key)
     this._instanceProviders.set(
       key,
       new InstanceProvider({
@@ -60,6 +62,14 @@ export class Brusc {
     if (typeof inject !== 'function') {
       throw new Error(
         'To enable injection, inject to define must be a function'
+      )
+    }
+  }
+
+  _guardKeyNotDefinedYet(key) {
+    if (this._instanceProviders.has(key)) {
+      throw new Error(
+        `[${key}] already defined, check singleton/prototype declaration key duplications`
       )
     }
   }
