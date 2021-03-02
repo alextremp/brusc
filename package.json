@@ -27,15 +27,16 @@
     "versiona": "node versiona.js"
   },
   "devDependencies": {
-    "@babel/cli": "7.8.0",
-    "@babel/core": "7.8.0",
-    "@babel/plugin-transform-modules-commonjs": "7.8.0",
-    "@babel/register": "7.8.0",
-    "@babel/runtime": "7.8.0",
+    "@babel/cli": "7.13.0",
+    "@babel/core": "7.13.8",
+    "@babel/plugin-proposal-class-properties": "7.13.0",
+    "@babel/plugin-transform-classes": "7.13.0",
+    "@babel/plugin-transform-modules-commonjs": "7.13.8",
+    "@babel/register": "7.13.8",
+    "@babel/runtime": "7.13.9",
     "@s-ui/lint": "3",
     "@s-ui/test": "4",
     "babel-loader": "8.0.6",
-    "babel-preset-sui": "3",
     "chai": "4.2.0",
     "codecov": "3.6.5",
     "mocha": "5.2.0",
@@ -44,11 +45,10 @@
     "versiona": "4"
   },
   "babel": {
-    "presets": [
-      "sui"
-    ],
     "plugins": [
-      "@babel/plugin-transform-modules-commonjs"
+      "@babel/plugin-transform-modules-commonjs",
+      "@babel/plugin-proposal-class-properties",
+      "@babel/plugin-transform-classes"
     ]
   },
   "eslintConfig": {
