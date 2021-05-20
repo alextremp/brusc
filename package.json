@@ -1,6 +1,6 @@
 {
   "name": "brusc",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "IOC Container for Effective JS development",
   "main": "dist",
   "keywords": [
@@ -61,7 +61,12 @@
       "@babel/plugin-transform-modules-commonjs",
       "@babel/plugin-proposal-class-properties",
       "@babel/plugin-transform-classes",
-      ["@babel/plugin-proposal-private-methods", { "loose": false }]
+      [
+        "@babel/plugin-proposal-private-methods",
+        {
+          "loose": false
+        }
+      ]
     ]
   },
   "eslintConfig": {
