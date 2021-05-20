@@ -60,7 +60,8 @@
     "plugins": [
       "@babel/plugin-transform-modules-commonjs",
       "@babel/plugin-proposal-class-properties",
-      "@babel/plugin-transform-classes"
+      "@babel/plugin-transform-classes",
+      ["@babel/plugin-proposal-private-methods", { "loose": false }]
     ]
   },
   "eslintConfig": {
